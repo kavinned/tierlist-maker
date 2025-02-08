@@ -4,16 +4,24 @@ import { useState } from "react";
 import UnrankedContainer from "./UnrankedContainer";
 import AddItemButton from "./AddItemButton";
 import AddItemDialog from "./AddItemDialog";
+import TierListName from "./TierListName";
+import Tiers from "./Tiers";
+import EditTierDialog from "./EditTierDialog";
+import SaveListButton from "./SaveListButton";
+import { useParams, useRouter } from "next/navigation";
+import { saveTierList } from "../(utils)/utils";
 
-export default function TierList() {
+export default function TierList({ initialItems, recordId }) {
     const [isEditingName, setIsEditingName] = useState(false);
     const [tierListName, setTierListName] = useState("Tier List");
-    const [items, setItems] = useState({
-        Unranked: { name: "Unranked", color: "#2c2c2c", items: [] },
-        S: { name: "S", color: "#2c2c2c", items: [] },
-        A: { name: "A", color: "#2c2c2c", items: [] },
-        B: { name: "B", color: "#2c2c2c", items: [] },
-    });
+    const [items, setItems] = useState(
+        initialItems || {
+            Unranked: { name: "Unranked", color: "#2c2c2c", items: [] },
+            S: { name: "S", color: "#2c2c2c", items: [] },
+            A: { name: "A", color: "#2c2c2c", items: [] },
+            B: { name: "B", color: "#2c2c2c", items: [] },
+        }
+    );
     const [showTextDialog, setShowTextDialog] = useState(false);
     const [showImageDialog, setShowImageDialog] = useState(false);
     const [newItemName, setNewItemName] = useState("");
@@ -22,6 +30,8 @@ export default function TierList() {
     const [editTier, setEditTier] = useState(null);
     const [editName, setEditName] = useState("");
     const [editColor, setEditColor] = useState("");
+    const router = useRouter();
+    const { id } = useParams();
 
     const toggleEditName = () => {
         setIsEditingName(true);
@@ -137,126 +147,50 @@ export default function TierList() {
         setEditColor("");
     };
 
+    const handleSaveList = async () => {
+        const uniqueId = id || Date.now();
+
+        try {
+            const record = await saveTierList(
+                items,
+                tierListName,
+                id,
+                recordId
+            );
+            console.log("Saved to Airtable:", record);
+            router.push(`/${uniqueId}`);
+            localStorage.setItem(uniqueId, JSON.stringify(items));
+        } catch (error) {
+            console.error("Error saving tier list:", error);
+        }
+    };
+
     return (
-        <div className="container">
-            <div className="w-full h-16 bg-slate-500 flex items-center justify-center rounded-xl">
-                {!isEditingName ? (
-                    <>
-                        <h1 className="text-3xl font-bold text-center m-4">
-                            {tierListName}
-                        </h1>
-                        <button
-                            onClick={toggleEditName}
-                            className="tertiary"
-                            type="button"
-                        >
-                            Edit
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <input
-                            type="text"
-                            value={tierListName}
-                            onChange={(e) => setTierListName(e.target.value)}
-                            className="text-3xl font-bold text-center m-4 bg-transparent border border-white rounded-md"
-                        />
-                        <button
-                            onClick={handleEditName}
-                            className="primary"
-                            type="button"
-                        >
-                            Save
-                        </button>
-                    </>
-                )}
-            </div>
-            {Object.keys(items)
-                .filter((tier) => tier !== "Unranked")
-                .map((tier) => (
-                    <div className="tier" key={items[tier].name}>
-                        <div
-                            className="tier-header relative"
-                            style={{ backgroundColor: items[tier].color }}
-                        >
-                            <p>{items[tier].name}</p>
-                            <div className="flex gap-2 absolute bottom-3">
-                                <button
-                                    className="tier-header-button primary"
-                                    onClick={() => handleEditTier(tier)}
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    className="tier-header-button destructive"
-                                    onClick={() => handleDeleteTier(tier)}
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                        <div className="tier-content">
-                            {items[tier]?.items?.map((item, index) => (
-                                <div key={items[tier].name} className="item">
-                                    {item.name}
-                                    {item.image && (
-                                        <img
-                                            className="item-image"
-                                            src={item.image}
-                                            alt={item.name}
-                                        />
-                                    )}
-                                    <span className="item-actions">
-                                        <button
-                                            onClick={() =>
-                                                moveItem(
-                                                    tier,
-                                                    "Unranked",
-                                                    index
-                                                )
-                                            }
-                                        >
-                                            Move to Unranked
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                removeItem(tier, index)
-                                            }
-                                        >
-                                            Remove
-                                        </button>
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+        <div className="w-full min-h-screen flex flex-col justify-center items-center p-7">
+            <TierListName
+                isEditingName={isEditingName}
+                toggleEditName={toggleEditName}
+                handleEditName={handleEditName}
+                tierListName={tierListName}
+                setTierListName={setTierListName}
+            />
+            <Tiers
+                items={items}
+                handleEditTier={handleEditTier}
+                handleDeleteTier={handleDeleteTier}
+                moveItem={moveItem}
+                removeItem={removeItem}
+            />
 
             {showEditDialog && (
-                <div className="edit-dialog">
-                    <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        placeholder="Enter new name"
-                    />
-                    <input
-                        type="color"
-                        value={editColor}
-                        onChange={(e) => setEditColor(e.target.value)}
-                    />
-                    <span className="flex gap-3">
-                        <button className="primary" onClick={handleSaveEdit}>
-                            Save
-                        </button>
-                        <button
-                            className="destructive"
-                            onClick={() => setShowEditDialog(false)}
-                        >
-                            Cancel
-                        </button>
-                    </span>
-                </div>
+                <EditTierDialog
+                    editName={editName}
+                    setEditName={setEditName}
+                    editColor={editColor}
+                    setEditColor={setEditColor}
+                    handleSaveEdit={handleSaveEdit}
+                    setShowEditDialog={setShowEditDialog}
+                />
             )}
             <UnrankedContainer
                 items={items.Unranked.items}
@@ -296,6 +230,7 @@ export default function TierList() {
                     />
                 )}
             </div>
+            <SaveListButton handleSaveList={handleSaveList} />
         </div>
     );
 }

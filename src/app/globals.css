@@ -10,6 +10,8 @@ body {
     background-color: #1e1e1e;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    max-width: 100dvw;
+    max-height: 100dvh;
 }
 
 input {
@@ -25,16 +27,19 @@ input {
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding: 20px;
 }
 
 .tier {
     display: flex;
-    width: 85%;
     border: 1px solid #ffffff;
     margin-top: 20px;
     border-radius: 8px;
+}
+
+.tier,
+.unranked {
+    @apply md:w-[85%] w-[95vw];
 }
 
 .tier-header {
@@ -50,21 +55,13 @@ input {
     text-align: center;
 }
 
-.tier-header.unranked {
+.unranked .tier-header {
     max-width: 100%;
     min-width: 100%;
 }
 
 .tier-content {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    background-color: #3a3a3a;
-    min-height: 128px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    gap: 8px;
-    padding: 12px;
+    @apply flex flex-1 md:flex-wrap gap-2 bg-[#3a3a3a] min-h-[128px] rounded-br-lg rounded-bl-lg p-4 overflow-scroll md:overflow-auto;
 }
 
 .item {
@@ -73,21 +70,23 @@ input {
     padding: 8px;
     border-radius: 4px;
     display: flex;
+    width: fit-content
 }
 
 .item-image {
     max-width: 128px;
     max-height: 128px;
     border-radius: 4px;
+    object-fit: contain;
 }
 
 .item-actions {
     display: flex;
-    flex-direction: column;;
+    flex-direction: column;
 }
 
 .item > .item-actions button {
-    font-size: 0.7em
+    font-size: 0.7em;
 }
 
 .expanded-image-overlay {
@@ -118,7 +117,7 @@ input {
     padding: 20px;
     border-radius: 8px;
     z-index: 1001;
-    @apply border border-slate-400
+    @apply border border-slate-400;
 }
 
 .tier-header:hover .tier-header-button {

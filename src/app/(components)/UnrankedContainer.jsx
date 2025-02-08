@@ -19,8 +19,8 @@ export default function UnrankedContainer({
     };
 
     return (
-        <div className="w-[85%] min-h-32 h-auto border border-white mt-5">
-            <div className="tier-header unranked">
+        <div className="w-[85%] min-h-32 h-auto border border-white mt-5 unranked">
+            <div className="tier-header">
                 <p>Unranked</p>
             </div>
             <div className="tier-content">
