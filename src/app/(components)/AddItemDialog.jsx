@@ -8,7 +8,7 @@ export default function AddItemDialog({
     onCancel,
 }) {
     return (
-        <div className="dialog">
+        <div className="dialog flex flex-col items-center">
             <input
                 type="text"
                 value={value}
@@ -17,8 +17,14 @@ export default function AddItemDialog({
                     type === "text" ? "Enter item name" : "Enter image URL"
                 }
             />
-            <button onClick={onAdd}>Add</button>
-            <button onClick={onCancel}>Cancel</button>
+            <div className="flex gap-3 p-3">
+                <button className="tertiary" onClick={onAdd}>
+                    Add
+                </button>
+                <button className="destructive" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
         </div>
     );
 }
