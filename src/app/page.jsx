@@ -1,14 +1,12 @@
-import Tiers from "./(components)/Tiers";
-import UnrankedContainer from "./(components)/UnrankedContainer";
+import TierList from "./(components)/TierList";
 
-export default function page() {
+export default function Home() {
     return (
-        <div className="h-screen max-w-screen flex items-center flex-col">
-            <Tiers />
-            <Tiers />
-            <Tiers />
-            <Tiers />
-            <UnrankedContainer />
+        <div className="max-w-screen max-h-screen flex flex-col items-center relative">
+            <h1 className="text-3xl font-bold text-center m-4">
+                Tier List Maker
+            </h1>
+            <TierList />
         </div>
     );
 }
