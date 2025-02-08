@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #1e1e1e;
+    background-color: #232426;
     color: #ffffff;
     font-family: Arial, sans-serif;
     max-width: 100dvw;
@@ -58,14 +58,19 @@ input {
 .unranked .tier-header {
     max-width: 100%;
     min-width: 100%;
+    @apply rounded-none
 }
 
 .tier-content {
-    @apply flex flex-1 md:flex-wrap gap-2 bg-[#3a3a3a] min-h-[128px] rounded-br-lg rounded-bl-lg p-4 overflow-scroll md:overflow-auto;
+    @apply flex flex-1 md:flex-wrap gap-2 bg-[#42474a] min-h-[128px] rounded-br-lg rounded-tr-lg p-4 overflow-scroll md:overflow-auto;
+}
+
+.unranked .tier-content {
+    @apply rounded-none;
 }
 
 .item {
-    background-color: #ffffff;
+    background-color: #778289;
     color: #000000;
     padding: 8px;
     border-radius: 4px;

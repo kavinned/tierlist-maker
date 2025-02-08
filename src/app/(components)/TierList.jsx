@@ -16,10 +16,10 @@ export default function TierList({ initialItems, recordId }) {
     const [tierListName, setTierListName] = useState("Tier List");
     const [items, setItems] = useState(
         initialItems || {
-            Unranked: { name: "Unranked", color: "#2c2c2c", items: [] },
-            S: { name: "S", color: "#2c2c2c", items: [] },
-            A: { name: "A", color: "#2c2c2c", items: [] },
-            B: { name: "B", color: "#2c2c2c", items: [] },
+            Unranked: { name: "Unranked", color: "#323638", items: [] },
+            S: { name: "S", color: "#323638", items: [] },
+            A: { name: "A", color: "#323638", items: [] },
+            B: { name: "B", color: "#323638", items: [] },
         }
     );
     const [showTextDialog, setShowTextDialog] = useState(false);
