@@ -13,6 +13,7 @@ import { saveTierList } from "../(utils)/utils";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { DragDropContext } from "@hello-pangea/dnd";
 
 export default function TierList({ initialItems, recordId }) {
     const [isEditingName, setIsEditingName] = useState(false);
@@ -87,25 +88,6 @@ export default function TierList({ initialItems, recordId }) {
         setNewItemImage("");
     };
 
-    const moveItem = (fromTier, toTier, index) => {
-        setItems((prevItems) => {
-            const item = prevItems[fromTier].items[index];
-            const newFromTier = {
-                ...prevItems[fromTier],
-                items: prevItems[fromTier].items.filter((_, i) => i !== index),
-            };
-            const newToTier = {
-                ...prevItems[toTier],
-                items: [...prevItems[toTier].items, item],
-            };
-            return {
-                ...prevItems,
-                [fromTier]: newFromTier,
-                [toTier]: newToTier,
-            };
-        });
-    };
-
     const removeItem = (tier, index) => {
         setItems((prevItems) => ({
             ...prevItems,
@@ -176,92 +158,132 @@ export default function TierList({ initialItems, recordId }) {
         }
     };
 
+    const handleDragEnd = (result) => {
+        const { source, destination } = result;
+
+        if (!destination) return;
+
+        if (
+            source.droppableId === destination.droppableId &&
+            source.index === destination.index
+        )
+            return;
+
+        const sourceId = source.droppableId;
+        const destId = destination.droppableId;
+
+        setItems((prevItems) => {
+            const sourceItems = [...prevItems[sourceId].items];
+            const destItems =
+                sourceId === destId
+                    ? sourceItems
+                    : [...prevItems[destId].items];
+
+            const [removed] = sourceItems.splice(source.index, 1);
+            destItems.splice(destination.index, 0, removed);
+
+            return {
+                ...prevItems,
+                [sourceId]: {
+                    ...prevItems[sourceId],
+                    items: sourceItems,
+                },
+                [destId]: {
+                    ...prevItems[destId],
+                    items: destItems,
+                },
+            };
+        });
+    };
+
     return (
-        <div className="w-full min-h-screen flex flex-col justify-center items-center p-7">
-            <TierListName
-                isEditingName={isEditingName}
-                toggleEditName={toggleEditName}
-                handleEditName={handleEditName}
-                tierListName={tierListName}
-                setTierListName={setTierListName}
-            />
-            <Tiers
-                items={items}
-                handleEditTier={handleEditTier}
-                handleDeleteTier={handleDeleteTier}
-                moveItem={moveItem}
-                removeItem={removeItem}
-            />
-            {showEditDialog && (
-                <EditTierDialog
-                    editName={editName}
-                    setEditName={setEditName}
-                    editColor={editColor}
-                    setEditColor={setEditColor}
-                    handleSaveEdit={handleSaveEdit}
-                    setShowEditDialog={setShowEditDialog}
+        <DragDropContext onDragEnd={handleDragEnd}>
+            <div className="w-full min-h-screen flex flex-col justify-center items-center p-7">
+                <TierListName
+                    isEditingName={isEditingName}
+                    toggleEditName={toggleEditName}
+                    handleEditName={handleEditName}
+                    tierListName={tierListName}
+                    setTierListName={setTierListName}
                 />
-            )}
-            <UnrankedContainer
-                items={items.Unranked.items}
-                moveItem={moveItem}
-                removeItem={removeItem}
-                tiers={Object.keys(items).filter((tier) => tier !== "Unranked")}
-            />
-            <div className="flex flex-col mt-5">
-                <span className="flex gap-3">
-                    <AddItemButton
-                        type="text"
-                        onClick={addTextItem}
-                        hidden={showImageDialog || showTextDialog}
-                    />
-                    <AddItemButton
-                        type="image"
-                        onClick={addImageItem}
-                        hidden={showTextDialog || showImageDialog}
-                    />
-                </span>
-                {showTextDialog && (
-                    <AddItemDialog
-                        type="text"
-                        value={newItemName}
-                        onChange={(e) => setNewItemName(e.target.value)}
-                        onAdd={handleAddTextItem}
-                        onCancel={() => setShowTextDialog(false)}
+                <Tiers
+                    items={items}
+                    handleEditTier={handleEditTier}
+                    handleDeleteTier={handleDeleteTier}
+                    removeItem={removeItem}
+                />
+                {showEditDialog && (
+                    <EditTierDialog
+                        editName={editName}
+                        setEditName={setEditName}
+                        editColor={editColor}
+                        setEditColor={setEditColor}
+                        handleSaveEdit={handleSaveEdit}
+                        setShowEditDialog={setShowEditDialog}
                     />
                 )}
-                {showImageDialog && (
-                    <AddItemDialog
-                        type="image"
-                        value={newItemImage}
-                        onChange={(e) => setNewItemImage(e.target.value)}
-                        onAdd={handleAddImageItem}
-                        onCancel={() => setShowImageDialog(false)}
-                    />
+                <UnrankedContainer
+                    items={items.Unranked.items}
+                    removeItem={removeItem}
+                    tiers={Object.keys(items).filter(
+                        (tier) => tier !== "Unranked"
+                    )}
+                />
+                <div className="flex flex-col mt-5">
+                    <span className="flex gap-3">
+                        <AddItemButton
+                            type="text"
+                            onClick={addTextItem}
+                            hidden={showImageDialog || showTextDialog}
+                        />
+                        <AddItemButton
+                            type="image"
+                            onClick={addImageItem}
+                            hidden={showTextDialog || showImageDialog}
+                        />
+                    </span>
+                    {showTextDialog && (
+                        <AddItemDialog
+                            type="text"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            onAdd={handleAddTextItem}
+                            onCancel={() => setShowTextDialog(false)}
+                        />
+                    )}
+                    {showImageDialog && (
+                        <AddItemDialog
+                            type="image"
+                            value={newItemImage}
+                            onChange={(e) => setNewItemImage(e.target.value)}
+                            onAdd={handleAddImageItem}
+                            onCancel={() => setShowImageDialog(false)}
+                        />
+                    )}
+                </div>
+                <SaveListButton handleSaveList={handleSaveList} />
+                <AnimatePresence>
+                    {saveSuccess && (
+                        <motion.div
+                            className="success-message fixed top-10 bg-emerald-500 p-5 rounded-xl"
+                            initial={{ opacity: 0, y: -200 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -200 }}
+                            transition={{ duration: 0.3 }}
+                        >
+                            <p>Tier List saved successfully</p>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                {path !== "/" && (
+                    <Link
+                        className="fixed text-sm top-1 left-1 opacity-60 hover:opacity-100 transition-opacity bg-emerald-900 p-1 rounded"
+                        href="/"
+                    >
+                        New List
+                    </Link>
                 )}
             </div>
-            <SaveListButton handleSaveList={handleSaveList} />
-            <AnimatePresence>
-                {saveSuccess && (
-                    <motion.div
-                        className="success-message fixed top-10 bg-emerald-500 p-5 rounded-xl"
-                        initial={{ opacity: 0, y: -200 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -200 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <p>Tier List saved successfully</p>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            {path !== "/" && (
-                <Link
-                    className="fixed text-sm top-1 left-1 opacity-60 hover:opacity-100 transition-opacity bg-emerald-900 p-1 rounded"
-                    href="/"
-                >
-                    New List
-                </Link>
-            )}
-        </div>
+        </DragDropContext>
     );
 }

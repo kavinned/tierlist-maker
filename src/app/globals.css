@@ -75,7 +75,11 @@ input {
     padding: 8px;
     border-radius: 4px;
     display: flex;
-    width: fit-content
+    width: fit-content;
+    min-width: 80px;
+    min-height: 80px;
+    display: grid;
+    place-items: center;
 }
 
 .item-image {
@@ -176,4 +180,26 @@ button.destructive {
 
 button:hover {
    filter: brightness(1.2);
+}
+
+.item {
+    cursor: grab;
+    transition: background-color 0.2s ease;
+}
+
+.item.dragging {
+    background-color: #566066;
+    cursor: grabbing;
+}
+
+.tier-content[data-rbd-droppable-state="hover"] {
+    background-color: #4f5659;
+}
+
+.item:hover .item-delete {
+   @apply absolute bottom-3 destructive w-2 h-2 p-2.5 flex items-center justify-center bg-red-500 rounded-full;
+}
+
+.item .item-delete {
+    @apply hidden;
 }

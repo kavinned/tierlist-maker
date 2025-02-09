@@ -18,6 +18,7 @@ export default function EditTierDialog({
                 type="color"
                 value={editColor}
                 onChange={(e) => setEditColor(e.target.value)}
+                className="w-10 h-10"
             />
             <span className="flex gap-3">
                 <button className="primary" onClick={handleSaveEdit}>
