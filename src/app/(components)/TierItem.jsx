@@ -2,6 +2,7 @@ import { Draggable } from "@hello-pangea/dnd";
 import { useState } from "react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
+import { XCircleIcon } from "lucide-react";
 
 export default function TierItem({ item, index, tier, removeItem }) {
     const [expandedImage, setExpandedImage] = useState(null);
@@ -24,7 +25,7 @@ export default function TierItem({ item, index, tier, removeItem }) {
                         {...provided.dragHandleProps}
                         className="item relative"
                     >
-                        {item.name}
+                        {item.name && <p>{item.name}</p>}
                         {item.image && (
                             <img
                                 className="item-image"
@@ -38,7 +39,12 @@ export default function TierItem({ item, index, tier, removeItem }) {
                             type="button"
                             onClick={() => removeItem(tier, index)}
                         >
-                            ×
+                            <XCircleIcon
+                                fill="red"
+                                strokeWidth={2}
+                                stroke="black"
+                                className="opacity-50 hover:opacity-100 transition-opacity duration-150 ease-linear"
+                            />
                         </button>
                     </div>
                 )}

@@ -1,7 +1,7 @@
-export default function SaveListButton({ handleSaveList }) {
+export default function SaveListButton({ handleSaveList, hidden }) {
     return (
         <button
-            className="primary fixed bottom-5 right-5 opacity-60 hover:opacity-100 transition-opacity"
+            className={`primary mb-4 ${hidden ? "hidden" : ""}`}
             type="button"
             onClick={handleSaveList}
         >

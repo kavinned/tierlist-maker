@@ -58,7 +58,7 @@ input {
 .unranked .tier-header {
     max-width: 100%;
     min-width: 100%;
-    @apply rounded-none
+    @apply rounded-none;
 }
 
 .tier-content {
@@ -70,23 +70,30 @@ input {
 }
 
 .item {
+    display: grid;
+    place-items: center;
     background-color: #778289;
     color: #000000;
     padding: 8px;
     border-radius: 4px;
-    display: flex;
-    width: fit-content;
-    min-width: 80px;
-    min-height: 80px;
-    display: grid;
-    place-items: center;
+    flex-wrap: wrap;
+    object-fit: contain;
 }
 
-.item-image {
+.item p {
+    min-width: 80px;
+    min-height: 80px;
     max-width: 128px;
-    max-height: 128px;
-    border-radius: 4px;
-    object-fit: contain;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: center;
+}
+
+.item img {
+    min-width: 80px;
+    min-height: 80px;
+    max-width: 128px;
 }
 
 .item-actions {
@@ -139,7 +146,7 @@ input {
     visibility: hidden;
     width: auto;
     height: auto;
-    padding: 2px 6px;
+    padding: 0.7rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -179,7 +186,7 @@ button.destructive {
 }
 
 button:hover {
-   filter: brightness(1.2);
+    filter: brightness(1.2);
 }
 
 .item {
@@ -197,9 +204,30 @@ button:hover {
 }
 
 .item:hover .item-delete {
-   @apply absolute bottom-3 destructive w-2 h-2 p-2.5 flex items-center justify-center bg-red-500 rounded-full;
+    @apply absolute bottom-0 destructive flex items-center justify-center rounded-full text-red-600;
 }
 
 .item .item-delete {
     @apply hidden;
+}
+
+.loader {
+  width: fit-content;
+  font-weight: bold;
+  font-family: monospace;
+  white-space: pre;
+  font-size: 30px;
+  line-height: 1.2em;
+  height:1.2em;
+  overflow: hidden;
+}
+.loader:before {
+  content:"Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔"; 
+  white-space: pre;
+  display: inline-block;
+  animation: l39 1s infinite steps(11) alternate;
+}
+
+@keyframes l39 {
+  100%{transform: translateY(-100%)}
 }

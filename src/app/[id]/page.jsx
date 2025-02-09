@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import TierList from "../(components)/TierList";
 import Link from "next/link";
 import { getRecordById } from "../(utils)/utils";
+import Loader from "../(components)/Loader";
 
 export default function Page() {
     const { id } = useParams();
@@ -72,11 +73,7 @@ export default function Page() {
     }
 
     if (!savedData) {
-        return (
-            <div className="grid place-items-center h-screen">
-                <p className="text-3xl font-bold">Loading...</p>
-            </div>
-        );
+        return <Loader />;
     }
 
     return (

@@ -1,3 +1,5 @@
+import * as motion from "framer-motion/client";
+
 export default function EditTierDialog({
     editName,
     setEditName,
@@ -7,7 +9,12 @@ export default function EditTierDialog({
     setShowEditDialog,
 }) {
     return (
-        <div className="edit-dialog">
+        <motion.div
+            initial={{ opacity: 0, top: "30%" }}
+            animate={{ opacity: 1, top: "50%" }}
+            exit={{ opacity: 0, top: "80%" }}
+            className="edit-dialog"
+        >
             <input
                 type="text"
                 value={editName}
@@ -31,6 +38,6 @@ export default function EditTierDialog({
                     Cancel
                 </button>
             </span>
-        </div>
+        </motion.div>
     );
 }

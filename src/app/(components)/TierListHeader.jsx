@@ -1,4 +1,7 @@
-export default function TierListName({
+import { SaveIcon } from "lucide-react";
+import { Edit } from "lucide-react";
+
+export default function TierListHeader({
     isEditingName,
     toggleEditName,
     handleEditName,
@@ -12,13 +15,10 @@ export default function TierListName({
                     <h1 className="text-3xl font-bold text-center m-4">
                         {tierListName}
                     </h1>
-                    <button
+                    <Edit
+                        className="cursor-pointer w-10 h-10 hover:scale-110 transition-all duration-200 hover:fill-[rgba(128,128,128,0.7)]"
                         onClick={toggleEditName}
-                        className="tertiary"
-                        type="button"
-                    >
-                        Edit
-                    </button>
+                    />
                 </>
             ) : (
                 <>
@@ -28,13 +28,10 @@ export default function TierListName({
                         onChange={(e) => setTierListName(e.target.value)}
                         className="text-3xl font-bold text-center m-4 bg-transparent border border-white rounded-md w-3/4"
                     />
-                    <button
+                    <SaveIcon
+                        className="w-10 h-10 cursor-pointer hover:scale-110 transition-all duration-200 hover:fill-[rgba(36,36,255,0.7)]"
                         onClick={handleEditName}
-                        className="primary m-4"
-                        type="button"
-                    >
-                        Save
-                    </button>
+                    />
                 </>
             )}
         </div>
