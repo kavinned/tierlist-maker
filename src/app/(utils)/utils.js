@@ -104,3 +104,16 @@ export const getRecordById = async (id) => {
         throw error;
     }
 };
+
+export const syncFromAirtable = async (id) => {
+    try {
+        const record = await getRecordById(id);
+        if (!record) throw new Error("No record found");
+
+        const items = JSON.parse(record.fields.items);
+        return items;
+    } catch (error) {
+        console.error("Sync error:", error);
+        throw error;
+    }
+};

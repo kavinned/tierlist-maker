@@ -37,8 +37,7 @@ export default function TierList({ initialItems, recordId }) {
     const [editTier, setEditTier] = useState(null);
     const [editName, setEditName] = useState("");
     const [editColor, setEditColor] = useState("");
-    const [saveSuccess, setSaveSuccess] = useState(false);
-    const [copySuccess, setCopySuccess] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
     const [loading, setLoading] = useState(false);
     const [url, setUrl] = useState("");
     const path = usePathname();
@@ -158,8 +157,8 @@ export default function TierList({ initialItems, recordId }) {
 
             localStorage.setItem(uniqueId, JSON.stringify(items));
             setLoading(false);
-            setSaveSuccess(true);
-            const timer = setTimeout(() => setSaveSuccess(false), 3000);
+            setSuccessMsg("Tier list saved successfully!");
+            const timer = setTimeout(() => setSuccessMsg(""), 3000);
 
             if (!id) router.push(`/${uniqueId}_${records.recordId}`);
 
@@ -182,6 +181,11 @@ export default function TierList({ initialItems, recordId }) {
         }));
     };
 
+    const handleResetList = () => {
+        localStorage.removeItem(uniqueId);
+        window.location.reload();
+    };
+
     const handleDragEnd = (result) => {
         const { source, destination } = result;
 
@@ -190,8 +194,9 @@ export default function TierList({ initialItems, recordId }) {
         if (
             source.droppableId === destination.droppableId &&
             source.index === destination.index
-        )
+        ) {
             return;
+        }
 
         const sourceId = source.droppableId;
         const destId = destination.droppableId;
@@ -206,24 +211,29 @@ export default function TierList({ initialItems, recordId }) {
             const [removed] = sourceItems.splice(source.index, 1);
             destItems.splice(destination.index, 0, removed);
 
-            return {
+            const newItems = {
                 ...prevItems,
                 [sourceId]: {
                     ...prevItems[sourceId],
                     items: sourceItems,
                 },
-                [destId]: {
+            };
+
+            if (sourceId !== destId) {
+                newItems[destId] = {
                     ...prevItems[destId],
                     items: destItems,
-                },
-            };
+                };
+            }
+
+            return newItems;
         });
     };
 
     const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(url);
-        setCopySuccess(true);
-        const timer = setTimeout(() => setCopySuccess(false), 3000);
+        setSuccessMsg("Link copied to clipboard!");
+        const timer = setTimeout(() => setSuccessMsg(""), 3000);
         return () => clearTimeout(timer);
     };
 
@@ -324,7 +334,7 @@ export default function TierList({ initialItems, recordId }) {
                         )}
                     </div>
                     <AnimatePresence>
-                        {(saveSuccess || copySuccess) && (
+                        {successMsg !== "" && (
                             <motion.div
                                 className="fixed top-10 bg-emerald-700 px-5 py-3 rounded-xl border-2 border-white"
                                 initial={{ opacity: 0, y: -200 }}
@@ -332,24 +342,33 @@ export default function TierList({ initialItems, recordId }) {
                                 exit={{ opacity: 0, y: -200 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <p>
-                                    {saveSuccess && "List saved successfully!"}
-                                    {copySuccess && "Copied to clipboard!"}
-                                </p>
+                                <p>{successMsg}</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
                     {path !== "/" && (
-                        <Link
-                            className={`text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
-                                showImageDialog || showTextDialog
-                                    ? "hidden"
-                                    : ""
-                            }`}
-                            href="/"
-                        >
-                            New List
-                        </Link>
+                        <span className="flex gap-3">
+                            <Link
+                                className={`flex items-center text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
+                                    showImageDialog || showTextDialog
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                                href="/"
+                            >
+                                New List
+                            </Link>
+                            <button
+                                className={`flex items-center text-md bg-cyan-800 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
+                                    showImageDialog || showTextDialog
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                                onClick={() => handleResetList()}
+                            >
+                                Reset
+                            </button>
+                        </span>
                     )}
                 </div>
             </DragDropContext>

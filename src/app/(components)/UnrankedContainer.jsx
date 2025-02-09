@@ -7,10 +7,12 @@ export default function UnrankedContainer({ items, removeItem }) {
             <div className="tier-header">
                 <p>Unranked</p>
             </div>
-            <Droppable droppableId="Unranked">
-                {(provided) => (
+            <Droppable droppableId="Unranked" direction="horizontal">
+                {(provided, snapshot) => (
                     <div
-                        className="tier-content"
+                        className={`tier-content ${
+                            snapshot.isDraggingOver ? "dragging" : ""
+                        }`}
                         ref={provided.innerRef}
                         {...provided.droppableProps}
                     >

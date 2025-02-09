@@ -62,7 +62,11 @@ input {
 }
 
 .tier-content {
-    @apply flex flex-1 md:flex-wrap gap-2 bg-[#42474a] min-h-[128px] rounded-br-lg rounded-tr-lg p-4 overflow-scroll md:overflow-auto;
+    @apply  flex flex-wrap w-full gap-2 bg-[#42474a] min-h-[128px] rounded-br-lg rounded-tr-lg p-4 overflow-scroll md:overflow-auto;
+}
+
+.tier-content.dragging, .unranked.dragging {
+    @apply bg-[#566066];
 }
 
 .unranked .tier-content {
@@ -74,7 +78,7 @@ input {
     place-items: center;
     background-color: #778289;
     color: #000000;
-    padding: 8px;
+    padding: 2px;
     border-radius: 4px;
     flex-wrap: wrap;
     object-fit: contain;
@@ -94,6 +98,7 @@ input {
     min-width: 80px;
     min-height: 80px;
     max-width: 128px;
+    border-radius: 4px;
 }
 
 .item-actions {
@@ -195,12 +200,8 @@ button:hover {
 }
 
 .item.dragging {
-    background-color: #566066;
+    background-color: #c4c4c4;
     cursor: grabbing;
-}
-
-.tier-content[data-rbd-droppable-state="hover"] {
-    background-color: #4f5659;
 }
 
 .item:hover .item-delete {

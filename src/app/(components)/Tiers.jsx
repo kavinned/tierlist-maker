@@ -20,10 +20,14 @@ export default function Tiers({
                             handleEditTier={handleEditTier}
                             handleDeleteTier={handleDeleteTier}
                         />
-                        <Droppable droppableId={tier}>
-                            {(provided) => (
+                        <Droppable droppableId={tier} direction="horizontal">
+                            {(provided, snapshot) => (
                                 <div
-                                    className="tier-content"
+                                    className={`tier-content ${
+                                        snapshot.isDraggingOver
+                                            ? "dragging"
+                                            : ""
+                                    }`}
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
                                 >

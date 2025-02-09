@@ -18,12 +18,14 @@ export default function TierItem({ item, index, tier, removeItem }) {
     return (
         <>
             <Draggable draggableId={`${tier}-${index}`} index={index}>
-                {(provided) => (
+                {(provided, snapshot) => (
                     <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className="item relative"
+                        className={`item relative ${
+                            snapshot.isDragging ? "dragging" : ""
+                        }`}
                     >
                         {item.name && <p>{item.name}</p>}
                         {item.image && (
