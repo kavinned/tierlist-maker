@@ -10,13 +10,13 @@ import SaveListButton from "./SaveListButton";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { saveTierList } from "../(utils)/utils";
 import { AnimatePresence } from "framer-motion";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { DragDropContext } from "@hello-pangea/dnd";
 import TierListHeader from "./TierListHeader";
 import CreateTierButton from "./CreateTierButton";
 import Loader from "./Loader";
 import CopyLink from "./CopyLink";
+import SuccessMsg from "./SuccessMsg";
 
 export default function TierList({ initialItems, recordId }) {
     const [isEditingName, setIsEditingName] = useState(false);
@@ -37,7 +37,7 @@ export default function TierList({ initialItems, recordId }) {
     const [editTier, setEditTier] = useState(null);
     const [editName, setEditName] = useState("");
     const [editColor, setEditColor] = useState("");
-    const [successMsg, setSuccessMsg] = useState("");
+    const [msg, setMsg] = useState("");
     const [loading, setLoading] = useState(false);
     const [url, setUrl] = useState("");
     const path = usePathname();
@@ -55,6 +55,11 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleEditName = () => {
+        if (tierListName.trim() === "") {
+            setMsg("Please enter a name.");
+            const timer = setTimeout(() => setMsg(""), 3000);
+            return () => clearTimeout(timer);
+        }
         setTierListName(tierListName);
         setIsEditingName(false);
     };
@@ -68,6 +73,11 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleAddTextItem = () => {
+        if (newItemName.trim() === "") {
+            setMsg("Please enter some text.");
+            const timer = setTimeout(() => setMsg(""), 3000);
+            return () => clearTimeout(timer);
+        }
         setItems((prevItems) => ({
             ...prevItems,
             Unranked: {
@@ -83,6 +93,11 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleAddImageItem = () => {
+        if (newItemImage.trim() === "") {
+            setMsg("Please enter a URL.");
+            const timer = setTimeout(() => setMsg(""), 3000);
+            return () => clearTimeout(timer);
+        }
         setItems((prevItems) => ({
             ...prevItems,
             Unranked: {
@@ -128,6 +143,12 @@ export default function TierList({ initialItems, recordId }) {
             return;
         }
 
+        if (editName.trim() === "") {
+            setMsg("Please enter a name for the tier.");
+            const timer = setTimeout(() => setMsg(""), 3000);
+            return () => clearTimeout(timer);
+        }
+
         setItems((prevItems) => ({
             ...prevItems,
             [editTier]: {
@@ -157,8 +178,8 @@ export default function TierList({ initialItems, recordId }) {
 
             localStorage.setItem(uniqueId, JSON.stringify(items));
             setLoading(false);
-            setSuccessMsg("Tier list saved successfully!");
-            const timer = setTimeout(() => setSuccessMsg(""), 3000);
+            setMsg("Tier list saved successfully!");
+            const timer = setTimeout(() => setMsg(""), 3000);
 
             if (!id) router.push(`/${uniqueId}_${records.recordId}`);
 
@@ -231,10 +252,31 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleCopyToClipboard = () => {
-        navigator.clipboard.writeText(url);
-        setSuccessMsg("Link copied to clipboard!");
-        const timer = setTimeout(() => setSuccessMsg(""), 3000);
-        return () => clearTimeout(timer);
+        try {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand("copy");
+                } catch (err) {
+                    console.error("Failed to copy text:", err);
+                }
+                textArea.remove();
+            }
+            setMsg("Copied to clipboard!");
+            const timer = setTimeout(() => setMsg(""), 3000);
+            return () => clearTimeout(timer);
+        } catch (error) {
+            console.error("Error copying URL to clipboard:", error);
+        }
     };
 
     return (
@@ -250,22 +292,6 @@ export default function TierList({ initialItems, recordId }) {
                         setTierListName={setTierListName}
                         handleCreateTier={handleCreateTier}
                     />
-                    <AnimatePresence href="">
-                        {recId && (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                            >
-                                <CopyLink
-                                    url={url}
-                                    handleCopyToClipboard={
-                                        handleCopyToClipboard
-                                    }
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
                     <Tiers
                         items={items}
                         handleEditTier={handleEditTier}
@@ -292,7 +318,7 @@ export default function TierList({ initialItems, recordId }) {
                         )}
                     />
                     <div className="flex flex-col mt-5">
-                        <span className="flex gap-3">
+                        <span className="md:flex grid grid-cols-2 gap-3">
                             <CreateTierButton
                                 handleCreateTier={handleCreateTier}
                                 hidden={showTextDialog || showImageDialog}
@@ -333,21 +359,9 @@ export default function TierList({ initialItems, recordId }) {
                             />
                         )}
                     </div>
-                    <AnimatePresence>
-                        {successMsg !== "" && (
-                            <motion.div
-                                className="fixed top-10 bg-emerald-700 px-5 py-3 rounded-xl border-2 border-white"
-                                initial={{ opacity: 0, y: -200 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -200 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <p>{successMsg}</p>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <SuccessMsg successMsg={msg} />
                     {path !== "/" && (
-                        <span className="flex gap-3">
+                        <span className="flex gap-3 mt-3 md:m-0 w-full justify-center">
                             <Link
                                 className={`flex items-center text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
                                     showImageDialog || showTextDialog
@@ -369,6 +383,11 @@ export default function TierList({ initialItems, recordId }) {
                                 Reset
                             </button>
                         </span>
+                    )}
+                    {recId && (
+                        <CopyLink
+                            handleCopyToClipboard={handleCopyToClipboard}
+                        />
                     )}
                 </div>
             </DragDropContext>

@@ -1,7 +1,7 @@
 export default function SaveListButton({ handleSaveList, hidden }) {
     return (
         <button
-            className={`primary mb-4 ${hidden ? "hidden" : ""}`}
+            className={`primary md:mb-4 ${hidden ? "hidden" : ""}`}
             type="button"
             onClick={handleSaveList}
         >
