@@ -10,6 +10,8 @@ import EditTierDialog from "./EditTierDialog";
 import SaveListButton from "./SaveListButton";
 import { useParams, useRouter } from "next/navigation";
 import { saveTierList } from "../(utils)/utils";
+import { AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function TierList({ initialItems, recordId }) {
     const [isEditingName, setIsEditingName] = useState(false);
@@ -30,6 +32,7 @@ export default function TierList({ initialItems, recordId }) {
     const [editTier, setEditTier] = useState(null);
     const [editName, setEditName] = useState("");
     const [editColor, setEditColor] = useState("");
+    const [saveSuccess, setSaveSuccess] = useState(false);
     const router = useRouter();
     const { id } = useParams();
 
@@ -149,17 +152,13 @@ export default function TierList({ initialItems, recordId }) {
 
     const handleSaveList = async () => {
         const uniqueId = id || Date.now();
-
         try {
-            const record = await saveTierList(
-                items,
-                tierListName,
-                id,
-                recordId
-            );
-            console.log("Saved to Airtable:", record);
+            await saveTierList(items, tierListName, id, recordId);
             router.push(`/${uniqueId}`);
+            setSaveSuccess(true);
             localStorage.setItem(uniqueId, JSON.stringify(items));
+            const timer = setTimeout(() => setSaveSuccess(false), 3000);
+            return () => clearTimeout(timer);
         } catch (error) {
             console.error("Error saving tier list:", error);
         }
@@ -181,7 +180,6 @@ export default function TierList({ initialItems, recordId }) {
                 moveItem={moveItem}
                 removeItem={removeItem}
             />
-
             {showEditDialog && (
                 <EditTierDialog
                     editName={editName}
@@ -231,6 +229,19 @@ export default function TierList({ initialItems, recordId }) {
                 )}
             </div>
             <SaveListButton handleSaveList={handleSaveList} />
+            <AnimatePresence>
+                {saveSuccess && (
+                    <motion.div
+                        className="success-message fixed top-10 bg-emerald-500 p-5 rounded-xl"
+                        initial={{ opacity: 0, y: -200 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -200 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <p>Tier List saved successfully</p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

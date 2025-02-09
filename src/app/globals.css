@@ -141,6 +141,10 @@ input {
     cursor: pointer;
 }
 
+button {
+    transition: all 0.1s linear;
+}
+
 button:not(.tier-header-button) {
     padding: 8px 16px;
     border: none;
@@ -168,4 +172,8 @@ button.tertiary {
 button.destructive {
     background-color: #dc3545;
     color: #ffffff;
+}
+
+button:hover {
+   filter: brightness(1.2);
 }

@@ -26,11 +26,11 @@ export default function TierListName({
                         type="text"
                         value={tierListName}
                         onChange={(e) => setTierListName(e.target.value)}
-                        className="text-3xl font-bold text-center m-4 bg-transparent border border-white rounded-md"
+                        className="text-3xl font-bold text-center m-4 bg-transparent border border-white rounded-md w-3/4"
                     />
                     <button
                         onClick={handleEditName}
-                        className="primary"
+                        className="primary m-4"
                         type="button"
                     >
                         Save

@@ -27,9 +27,18 @@ export default function Page() {
 
                 const record = await getRecordById(id);
                 const items = JSON.parse(record.fields.items);
-                localStorage.setItem(id, record.fields.items);
+                let transformedItems = { ...items };
+                for (const tier in transformedItems) {
+                    if (tier !== "Unranked") {
+                        transformedItems["Unranked"].items.push(
+                            ...transformedItems[tier].items
+                        );
+                        transformedItems[tier].items = [];
+                    }
+                }
+                localStorage.setItem(id, JSON.stringify(transformedItems));
                 setSavedData({
-                    items,
+                    items: transformedItems,
                     recordId: record.id,
                 });
             } catch (error) {
@@ -43,18 +52,20 @@ export default function Page() {
 
     if (error) {
         return (
-            <div className="text-center mt-10 flex w-screen justify-center items-center md:h-fit h-screen">
-                <p className="text-3xl font-bold">{error}</p>
-                <Link className="underline text-blue-500" href="/">
-                    Go back
-                </Link>
+            <div className="grid place-items-center h-screen">
+                <span className="w-full text-center">
+                    <p className="text-3xl font-bold">{error}</p>
+                    <Link className="underline text-blue-500" href="/">
+                        Go back
+                    </Link>
+                </span>
             </div>
         );
     }
 
     if (!savedData) {
         return (
-            <div className="text-center mt-10 flex w-screen justify-center items-center md:h-fit h-screen">
+            <div className="grid place-items-center h-screen">
                 <p className="text-3xl font-bold">Loading...</p>
             </div>
         );

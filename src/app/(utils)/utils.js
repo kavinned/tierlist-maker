@@ -24,7 +24,7 @@ export const transformFromDatabaseFormat = (data) => {
 };
 
 export const createEntry = async (tierList, tierListName) => {
-    try {
+    return new Promise((resolve, reject) => {
         base("Table 1").create(
             [
                 {
@@ -38,23 +38,20 @@ export const createEntry = async (tierList, tierListName) => {
             function (err, records) {
                 if (err) {
                     console.error(err);
-                    return;
+                    reject(err);
+                } else {
+                    records.forEach(function (record) {
+                        console.log(record.getId());
+                    });
+                    resolve(records);
                 }
-                records.forEach(function (record) {
-                    console.log(record.getId());
-                });
             }
         );
-    } catch (error) {
-        console.error("Error saving to Airtable:", error);
-        throw error;
-    }
+    });
 };
 
 export const updateEntry = async (tierList, tierListName, id, recordId) => {
-    console.log(tierList, tierListName, id, recordId);
-
-    try {
+    return new Promise((resolve, reject) => {
         base("Table 1").update(
             [
                 {
@@ -69,17 +66,16 @@ export const updateEntry = async (tierList, tierListName, id, recordId) => {
             function (err, records) {
                 if (err) {
                     console.error(err);
-                    return;
+                    reject(err);
+                } else {
+                    records.forEach(function (record) {
+                        console.log(record.get("id"));
+                    });
+                    resolve(records);
                 }
-                records.forEach(function (record) {
-                    console.log(record.get("id"));
-                });
             }
         );
-    } catch (error) {
-        console.error("Error updating to Airtable:", error);
-        throw error;
-    }
+    });
 };
 
 export const saveTierList = async (tierList, tierListName, id, recordId) => {
