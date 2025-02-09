@@ -8,7 +8,7 @@ import TierListName from "./TierListName";
 import Tiers from "./Tiers";
 import EditTierDialog from "./EditTierDialog";
 import SaveListButton from "./SaveListButton";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { saveTierList } from "../(utils)/utils";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
@@ -34,6 +34,7 @@ export default function TierList({ initialItems, recordId }) {
     const [editName, setEditName] = useState("");
     const [editColor, setEditColor] = useState("");
     const [saveSuccess, setSaveSuccess] = useState(false);
+    const path = usePathname();
     const router = useRouter();
     const { id } = useParams();
     const uniqueId = id ? id.split("_")[0] : Date.now().toString();
@@ -253,7 +254,7 @@ export default function TierList({ initialItems, recordId }) {
                     </motion.div>
                 )}
             </AnimatePresence>
-            {location.pathname !== "/" && (
+            {path !== "/" && (
                 <Link
                     className="fixed text-sm top-1 left-1 opacity-60 hover:opacity-100 transition-opacity bg-emerald-900 p-1 rounded"
                     href="/"
