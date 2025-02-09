@@ -12,6 +12,7 @@ import { useParams, useRouter } from "next/navigation";
 import { saveTierList } from "../(utils)/utils";
 import { AnimatePresence } from "framer-motion";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function TierList({ initialItems, recordId }) {
     const [isEditingName, setIsEditingName] = useState(false);
@@ -35,6 +36,8 @@ export default function TierList({ initialItems, recordId }) {
     const [saveSuccess, setSaveSuccess] = useState(false);
     const router = useRouter();
     const { id } = useParams();
+    const uniqueId = id ? id.split("_")[0] : Date.now().toString();
+    const recId = recordId || (id ? id.split("_")[1] : null);
 
     const toggleEditName = () => {
         setIsEditingName(true);
@@ -151,13 +154,21 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleSaveList = async () => {
-        const uniqueId = id || Date.now();
         try {
-            await saveTierList(items, tierListName, id, recordId);
-            router.push(`/${uniqueId}`);
-            setSaveSuccess(true);
+            const records = await saveTierList(
+                items,
+                tierListName,
+                uniqueId,
+                recId
+            );
+
             localStorage.setItem(uniqueId, JSON.stringify(items));
+
+            setSaveSuccess(true);
             const timer = setTimeout(() => setSaveSuccess(false), 3000);
+
+            if (!id) router.push(`/${uniqueId}_${records.recordId}`);
+
             return () => clearTimeout(timer);
         } catch (error) {
             console.error("Error saving tier list:", error);
@@ -242,6 +253,14 @@ export default function TierList({ initialItems, recordId }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {location.pathname !== "/" && (
+                <Link
+                    className="fixed text-sm top-1 left-1 opacity-60 hover:opacity-100 transition-opacity bg-emerald-900 p-1 rounded"
+                    href="/"
+                >
+                    New List
+                </Link>
+            )}
         </div>
     );
 }

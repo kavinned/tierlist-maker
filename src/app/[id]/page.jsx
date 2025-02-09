@@ -10,11 +10,17 @@ export default function Page() {
     const { id } = useParams();
     const [savedData, setSavedData] = useState(null);
     const [error, setError] = useState(null);
+    const uniqueId = id.split("_")[0];
+    const recId = id.split("_")[1];
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!recId) {
+                setError("Record not found. Likely error with URL");
+                throw new Error("Record not found. Likely error with URL");
+            }
             try {
-                const localData = localStorage.getItem(id);
+                const localData = localStorage.getItem(uniqueId);
 
                 if (localData) {
                     const parsedData = JSON.parse(localData);
@@ -24,8 +30,7 @@ export default function Page() {
                     }));
                     return;
                 }
-
-                const record = await getRecordById(id);
+                const record = await getRecordById(uniqueId);
                 const items = JSON.parse(record.fields.items);
                 let transformedItems = { ...items };
                 for (const tier in transformedItems) {
@@ -36,7 +41,10 @@ export default function Page() {
                         transformedItems[tier].items = [];
                     }
                 }
-                localStorage.setItem(id, JSON.stringify(transformedItems));
+                localStorage.setItem(
+                    uniqueId,
+                    JSON.stringify(transformedItems)
+                );
                 setSavedData({
                     items: transformedItems,
                     recordId: record.id,

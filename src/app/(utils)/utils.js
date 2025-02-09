@@ -41,9 +41,8 @@ export const createEntry = async (tierList, tierListName) => {
                     reject(err);
                 } else {
                     records.forEach(function (record) {
-                        console.log(record.getId());
+                        resolve({ records, recordId: record.getId() });
                     });
-                    resolve(records);
                 }
             }
         );
@@ -51,6 +50,8 @@ export const createEntry = async (tierList, tierListName) => {
 };
 
 export const updateEntry = async (tierList, tierListName, id, recordId) => {
+    // console.log(tierList, tierListName, id, recordId);
+
     return new Promise((resolve, reject) => {
         base("Table 1").update(
             [
@@ -79,7 +80,7 @@ export const updateEntry = async (tierList, tierListName, id, recordId) => {
 };
 
 export const saveTierList = async (tierList, tierListName, id, recordId) => {
-    if (!id) {
+    if (!recordId) {
         return createEntry(tierList, tierListName);
     } else {
         return updateEntry(tierList, tierListName, id, recordId);
