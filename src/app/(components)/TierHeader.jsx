@@ -14,18 +14,22 @@ export default function TierHeader({
         >
             <p>{items[tier].name}</p>
             <div className="flex absolute bottom-3 h-fit rounded-full overflow-hidden">
-                <button className="tier-header-button">
+                <button
+                    className="tier-header-button"
+                    onClick={() => handleEditTier(tier)}
+                >
                     <Edit2Icon
                         className="fill-sky-500 hover:scale-125 hover:fill-sky-700 transition-all duration-200 stroke-black"
                         size={15}
-                        onClick={() => handleEditTier(tier)}
                     />
                 </button>
-                <button className="tier-header-button">
+                <button
+                    className="tier-header-button"
+                    onClick={() => handleDeleteTier(tier)}
+                >
                     <Trash
                         className="fill-red-500 hover:scale-125 hover:fill-red-700 transition-all duration-200 stroke-black"
                         size={15}
-                        onClick={() => handleDeleteTier(tier)}
                     />
                 </button>
             </div>
