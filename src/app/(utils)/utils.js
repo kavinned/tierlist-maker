@@ -23,13 +23,13 @@ export const transformFromDatabaseFormat = (data) => {
     };
 };
 
-export const createEntry = async (tierList, tierListName) => {
+export const createEntry = async (tierList, tierListName, uniqueId) => {
     return new Promise((resolve, reject) => {
         base("Table 1").create(
             [
                 {
                     fields: {
-                        id: Date.now().toString(),
+                        id: uniqueId,
                         tierListName: tierListName,
                         items: JSON.stringify(tierList),
                     },
@@ -50,8 +50,6 @@ export const createEntry = async (tierList, tierListName) => {
 };
 
 export const updateEntry = async (tierList, tierListName, id, recordId) => {
-    // console.log(tierList, tierListName, id, recordId);
-
     return new Promise((resolve, reject) => {
         base("Table 1").update(
             [
@@ -81,7 +79,7 @@ export const updateEntry = async (tierList, tierListName, id, recordId) => {
 
 export const saveTierList = async (tierList, tierListName, id, recordId) => {
     if (!recordId) {
-        return createEntry(tierList, tierListName);
+        return createEntry(tierList, tierListName, id);
     } else {
         return updateEntry(tierList, tierListName, id, recordId);
     }
