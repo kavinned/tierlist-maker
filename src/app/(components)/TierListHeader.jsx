@@ -9,7 +9,7 @@ export default function TierListHeader({
     setTierListName,
 }) {
     return (
-        <div className="w-[85vw] h-16 bg-[#4b5154] flex items-center justify-center rounded-xl">
+        <div className="tier-list-header">
             {!isEditingName ? (
                 <>
                     <h1 className="text-3xl font-bold text-center m-4">

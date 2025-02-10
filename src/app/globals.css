@@ -3,214 +3,142 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --tier-content-width: 95vw;
+}
+
+@media (min-width: 768px) {
+    :root {
+        --tier-content-width: 85vw;
+    }
+}
+
 * {
-    box-sizing: border-box;
+  @apply box-border;
 }
 
 body {
-    background-color: #232426;
-    color: #ffffff;
-    font-family: "Montserrat", sans-serif, system-ui;
-    max-width: 100dvw;
-    max-height: 100dvh;
+  @apply bg-[#232426] text-white max-w-[100dvw] max-h-[100dvh] font-primary md:text-[1rem] text-sm;
 }
 
 input {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ffffff;
-    border-radius: 4px;
-    background: #2c2c2c;
-    color: #ffffff;
+  @apply block border rounded bg-[#2c2c2c] text-white mb-2.5 p-2 border-solid border-white;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+  @apply flex flex-col p-5;
 }
 
 .tier {
-    display: flex;
-    border: 1px solid #ffffff;
-    margin-top: 20px;
-    border-radius: 8px;
+  @apply flex mt-5 rounded shadow-xl;
 }
 
 .tier,
 .unranked {
-    @apply md:w-[85%] w-[95vw];
+  @apply md:w-[85%] w-[95vw] border border-solid border-[rgba(128,128,128,0.7)];
 }
 
 .tier-header {
-    max-width: 128px;
-    min-width: 128px;
-    width: auto;
-    background-color: #2c2c2c;
-    display: grid;
-    place-items: center;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-    position: relative;
-    text-align: center;
+  @apply min-w-[calc(var(--tier-content-width)/5)] max-w-[calc(var(--tier-content-width)/5)] md:min-w-[calc(var(--tier-content-width)/8)] md:max-w-[calc(var(--tier-content-width)/8)] bg-[#2c2c2c] grid place-items-center relative text-center rounded-tl rounded-bl p-1 border-r border-r-[rgba(128,128,128,0.3)];
 }
 
 .unranked .tier-header {
-    max-width: 100%;
-    min-width: 100%;
-    @apply rounded-none;
+  @apply max-w-full min-w-full rounded-none;
 }
 
 .tier-content {
-    @apply  flex flex-wrap w-full gap-2 bg-[#42474a] min-h-[128px] rounded-br-lg rounded-tr-lg p-4 overflow-scroll md:overflow-auto;
+  @apply flex flex-wrap w-full gap-2 bg-[#42474a] min-h-[128px] rounded-br rounded-tr p-4 overflow-hidden break-words transition-all duration-200 ease-linear;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5)
 }
 
-.tier-content.dragging, .unranked.dragging {
-    @apply bg-[#566066];
+.tier-content.dragging,
+.unranked.dragging {
+  @apply bg-[#566066];
+  box-shadow: inset 0 0 15px rgba(128, 35, 0, 0.75)
 }
 
 .unranked .tier-content {
-    @apply rounded-none;
+  @apply rounded-none;
 }
 
 .item {
-    display: grid;
-    place-items: center;
-    background-color: #778289;
-    color: #000000;
-    padding: 2px;
-    border-radius: 4px;
-    flex-wrap: wrap;
-    object-fit: contain;
+  @apply grid place-items-center bg-[#778289] text-black rounded flex-wrap object-contain p-0.5 cursor-grab transition-[background-color] duration-200 ease-in-out drop-shadow-lg;
 }
-
 .item p {
-    min-width: 80px;
-    min-height: fit-content;
-    max-width: 128px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    text-align: center;
+  word-wrap: break-word;
+  @apply md:min-w-[80px] md:min-h-[80px] md:max-w-[calc(85vw/14)] max-w-[calc(var(--tier-content-width)/5)] break-words whitespace-normal text-center;
 }
-
 .item img {
-    min-width: 80px;
-    min-height: 80px;
-    max-width: 128px;
-    border-radius: 4px;
+  @apply md:min-w-[80px] md:min-h-[80px] md:max-w-[calc(85vw/15)] max-w-[calc(var(--tier-content-width)/5)] rounded;
 }
 
 .item-actions {
-    display: flex;
-    flex-direction: column;
+  @apply flex flex-col;
 }
 
 .item > .item-actions button {
-    font-size: 0.7em;
+  @apply text-[0.7em];
 }
 
 .expanded-image-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  @apply fixed w-full h-full bg-[rgba(0,0,0,0.8)] flex justify-center items-center z-[1000] left-0 top-0;
 }
 
 .expanded-image {
-    max-height: 80vh;
-    max-width: 80vw;
-    border-radius: 8px;
+  @apply max-h-[80vh] max-w-[80vw] rounded-lg
 }
 
 .edit-dialog {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #3a3a3a;
-    padding: 20px;
-    border-radius: 8px;
-    z-index: 1001;
-    @apply border border-slate-400;
+  @apply fixed -translate-x-2/4 -translate-y-2/4 bg-[#3a3a3a] z-[1001] p-5 rounded-lg left-2/4 top-2/4;
+  @apply border border-slate-400;
+}
+
+.tier-list-header {
+  @apply w-[85vw] h-16 bg-[#4b5154] flex items-center justify-center rounded-xl drop-shadow-xl shadow-xl;
 }
 
 .tier-header:hover .tier-header-button {
-    visibility: visible;
-    width: auto;
-    height: auto;
+  @apply visible w-auto h-auto;
 }
 
 .tier-header-button {
-    visibility: hidden;
-    width: auto;
-    height: auto;
-    padding: 0.7rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  @apply invisible w-auto h-auto rounded cursor-pointer p-[0.7rem] border-[none] transition-all duration-200 hover:bg-[rgba(0,0,0,0.4)];
 }
 
 button {
-    transition: all 0.1s linear;
+  @apply transition-all duration-[0.1s] ease-linear hover:brightness-[1.2] drop-shadow-sm shadow-sm;
 }
 
 button:not(.tier-header-button) {
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
-    @apply md:py-2 md:px-4 px-1 py-2
+  @apply rounded cursor-pointer text-base font-medium border-none md:py-2 md:px-4 px-1 py-2;
 }
 
 button.primary {
-    background-color: #007bff;
-    color: #ffffff;
+  @apply bg-[#007bff] text-white;
 }
 
 button.secondary {
-    background-color: #6c757d;
-    color: #ffffff;
+  @apply bg-[#6c757d] text-white;
 }
 
 button.tertiary {
-    background-color: #28a745;
-    color: #ffffff;
+  @apply bg-[#28a745] text-white;
 }
 
 button.destructive {
-    background-color: #dc3545;
-    color: #ffffff;
-}
-
-button:hover {
-    filter: brightness(1.2);
-}
-
-.item {
-    cursor: grab;
-    transition: background-color 0.2s ease;
+  @apply bg-[#dc3545] text-white;
 }
 
 .item.dragging {
-    background-color: #c4c4c4;
-    cursor: grabbing;
+  @apply bg-[#c4c4c4] cursor-grabbing;
 }
 
 .item:hover .item-delete {
-    @apply absolute bottom-0 destructive flex items-center justify-center rounded-full text-red-600;
+  @apply absolute bottom-0 destructive flex items-center justify-center rounded-full text-red-600;
 }
 
 .item .item-delete {
-    @apply hidden;
+  @apply hidden;
 }
 
 .loader {

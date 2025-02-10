@@ -363,7 +363,7 @@ export default function TierList({ initialItems, recordId }) {
                     {path !== "/" && (
                         <span className="flex gap-3 mt-3 md:m-0 w-full justify-center">
                             <Link
-                                className={`flex items-center text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
+                                className={`flex items-center text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out w-24 justify-center ${
                                     showImageDialog || showTextDialog
                                         ? "hidden"
                                         : ""
@@ -373,7 +373,7 @@ export default function TierList({ initialItems, recordId }) {
                                 New List
                             </Link>
                             <button
-                                className={`flex items-center text-md bg-cyan-800 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out ${
+                                className={`flex items-center text-md bg-cyan-800 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out w-24 justify-center shadow-sm drop-shadow-sm ${
                                     showImageDialog || showTextDialog
                                         ? "hidden"
                                         : ""
