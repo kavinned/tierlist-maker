@@ -104,15 +104,15 @@ input {
 }
 
 .tier-header:hover .tier-header-button {
-    @apply visible w-auto h-auto;
+    @apply visible;
 }
 
 .tier-header-button {
-    @apply invisible w-auto h-auto rounded cursor-pointer p-[0.7rem] border-[none] transition-all duration-200 hover:bg-[rgba(0,0,0,0.4)];
+    @apply invisible rounded cursor-pointer p-[0.7rem] border-[none] transition-all duration-200 hover:bg-[rgba(0,0,0,0.4)];
 }
 
 button {
-    @apply duration-100 ease-linear hover:brightness-[1.2] brightness-100 hover:shadow-xl drop-shadow-md shadow-md;;
+    @apply duration-100 ease-linear hover:brightness-[1.2] brightness-100;
 }
 
 button:not(.tier-header-button) {
@@ -136,7 +136,7 @@ button.destructive {
 }
 
 button.action-buttons {
-    @apply break-words px-3;
+    @apply break-words px-3 hover:shadow-xl drop-shadow-md shadow-md;
 }
 
 .item.dragging {
@@ -166,6 +166,7 @@ button.action-buttons {
     height: 1.2em;
     overflow: hidden;
 }
+
 .loader:before {
     content: "Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔";
     white-space: pre;
