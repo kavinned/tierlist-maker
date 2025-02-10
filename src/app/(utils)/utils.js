@@ -115,3 +115,7 @@ export const syncFromAirtable = async (id) => {
         throw error;
     }
 };
+
+export const generateId = () => {
+    return Math.floor(Math.random() * 9999999999999) + 1;
+};

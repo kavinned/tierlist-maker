@@ -8,7 +8,7 @@ import Tiers from "./Tiers";
 import EditTierDialog from "./EditTierDialog";
 import SaveListButton from "./SaveListButton";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { saveTierList } from "../(utils)/utils";
+import { generateId, saveTierList } from "../(utils)/utils";
 import { AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { DragDropContext } from "@hello-pangea/dnd";
@@ -24,9 +24,6 @@ export default function TierList({ initialItems, recordId }) {
     const [items, setItems] = useState(
         initialItems || {
             Unranked: { name: "Unranked", color: "#323638", items: [] },
-            0: { name: "Tier 1", color: "#323638", items: [] },
-            1: { name: "Tier 2", color: "#323638", items: [] },
-            2: { name: "Tier 3", color: "#323638", items: [] },
         }
     );
     const [showTextDialog, setShowTextDialog] = useState(false);
@@ -45,6 +42,18 @@ export default function TierList({ initialItems, recordId }) {
     const { id } = useParams();
     const uniqueId = id ? id.split("_")[0] : Date.now().toString();
     const recId = recordId || (id ? id.split("_")[1] : null);
+
+    useEffect(() => {
+        if (!initialItems) {
+            setItems((prevItems) => ({
+                ...prevItems,
+                [generateId()]: { name: "Tier 1", color: "#323638", items: [] },
+                [generateId()]: { name: "Tier 2", color: "#323638", items: [] },
+                [generateId()]: { name: "Tier 3", color: "#323638", items: [] },
+            }));
+        }
+        return;
+    }, []);
 
     useEffect(() => {
         setUrl(window.location.href);
@@ -134,8 +143,20 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleDeleteTier = (tier) => {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this tier? Items will be moved to the Unranked tier."
+        );
+        if (!confirmed) return;
         setItems((prevItems) => {
-            const newItems = { ...prevItems };
+            const itemsToMove = prevItems[tier].items;
+            const mergedItems = prevItems["Unranked"].items.concat(itemsToMove);
+            const newItems = {
+                ...prevItems,
+                Unranked: {
+                    ...prevItems.Unranked,
+                    items: mergedItems,
+                },
+            };
             delete newItems[tier];
             return newItems;
         });
@@ -194,11 +215,11 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleCreateTier = () => {
-        const length = Object.keys(items).length;
+        const length = Object.entries(items).length;
 
         setItems((prevItems) => ({
             ...prevItems,
-            [length]: {
+            [generateId()]: {
                 name: `Tier ${Number(length)}`,
                 color: "#323638",
                 items: [],
