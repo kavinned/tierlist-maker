@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import TierList from "../(components)/TierList";
 import Link from "next/link";
-import { getRecordById } from "../(utils)/utils";
+import { getRecordById, isValidRecordId } from "../(utils)/utils";
 import Loader from "../(components)/Loader";
 
 export default function Page() {
@@ -13,10 +13,11 @@ export default function Page() {
     const [error, setError] = useState(null);
     const uniqueId = id.split("_")[0];
     const recId = id.split("_")[1];
+    const validRecord = isValidRecordId(recId);
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!recId) {
+            if (!recId || !validRecord) {
                 setError("Record not found. Likely error with URL");
                 throw new Error("Record not found. Likely error with URL");
             }

@@ -210,6 +210,8 @@ export default function TierList({ initialItems, recordId }) {
 
             return () => clearTimeout(timer);
         } catch (error) {
+            setLoading(false);
+            setMsg(error.message);
             console.error("Error saving tier list:", error);
         }
     };

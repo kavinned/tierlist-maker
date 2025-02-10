@@ -51,6 +51,10 @@ export const createEntry = async (tierList, tierListName, uniqueId) => {
 
 export const updateEntry = async (tierList, tierListName, id, recordId) => {
     return new Promise((resolve, reject) => {
+        const validRecord = isValidRecordId(recordId);
+        if (!validRecord) {
+            reject(new Error("Record not found. Likely error with URL"));
+        }
         base("Table 1").update(
             [
                 {
@@ -118,4 +122,9 @@ export const syncFromAirtable = async (id) => {
 
 export const generateId = () => {
     return Math.floor(Math.random() * 9999999999999) + 1;
+};
+
+export const isValidRecordId = (id) => {
+    const recordIdRegex = /^rec[A-Za-z0-9]{14}$/;
+    return recordIdRegex.test(id);
 };
