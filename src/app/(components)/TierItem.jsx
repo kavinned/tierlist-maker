@@ -60,11 +60,19 @@ export default function TierItem({ item, index, tier, removeItem }) {
                         className="expanded-image-overlay"
                         onClick={handleCloseImage}
                     >
-                        <img
-                            src={expandedImage}
-                            alt="Expanded"
-                            className="expanded-image"
-                        />
+                        <div className="relative">
+                            <img
+                                src={expandedImage}
+                                alt="Expanded"
+                                className="expanded-image"
+                            />
+                            <p
+                                className="item-delete__expanded"
+                                onClick={() => removeItem(tier, index)}
+                            >
+                                DELETE
+                            </p>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

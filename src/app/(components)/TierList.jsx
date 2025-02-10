@@ -113,6 +113,10 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const removeItem = (tier, index) => {
+        const confirmed = window.confirm(
+            "Are you sure you want to remove this item?"
+        );
+        if (!confirmed) return;
         setItems((prevItems) => ({
             ...prevItems,
             [tier]: {
@@ -337,6 +341,29 @@ export default function TierList({ initialItems, recordId }) {
                                 handleSaveList={handleSaveList}
                                 hidden={showTextDialog || showImageDialog}
                             />
+                            {path !== "/" && (
+                                <>
+                                    <button
+                                        className={`action-buttons order-4 bg-lime-700 ${
+                                            showImageDialog || showTextDialog
+                                                ? "hidden"
+                                                : ""
+                                        }`}
+                                    >
+                                        <Link href="/">New List</Link>
+                                    </button>
+                                    <button
+                                        className={`action-buttons bg-cyan-800 order-5 ${
+                                            showImageDialog || showTextDialog
+                                                ? "hidden"
+                                                : ""
+                                        }`}
+                                        onClick={() => handleResetList()}
+                                    >
+                                        Reset
+                                    </button>
+                                </>
+                            )}
                         </span>
                         {showTextDialog && (
                             <AddItemDialog
@@ -360,30 +387,7 @@ export default function TierList({ initialItems, recordId }) {
                         )}
                     </div>
                     <SuccessMsg successMsg={msg} />
-                    {path !== "/" && (
-                        <span className="flex gap-3 mt-3 md:m-0 w-full justify-center">
-                            <Link
-                                className={`flex items-center text-md bg-lime-700 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out w-24 justify-center ${
-                                    showImageDialog || showTextDialog
-                                        ? "hidden"
-                                        : ""
-                                }`}
-                                href="/"
-                            >
-                                New List
-                            </Link>
-                            <button
-                                className={`flex items-center text-md bg-cyan-800 hover:brightness-[1.2] px-2 py-1 rounded transition-all duration-100 ease-in-out w-24 justify-center shadow-sm drop-shadow-sm ${
-                                    showImageDialog || showTextDialog
-                                        ? "hidden"
-                                        : ""
-                                }`}
-                                onClick={() => handleResetList()}
-                            >
-                                Reset
-                            </button>
-                        </span>
-                    )}
+
                     {recId && (
                         <CopyLink
                             handleCopyToClipboard={handleCopyToClipboard}

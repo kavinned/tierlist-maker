@@ -1,7 +1,9 @@
 export default function CreateTierButton({ handleCreateTier, hidden }) {
     return (
         <button
-            className={`tertiary md:mb-4 ${hidden ? "hidden" : ""}`}
+            className={`tertiary action-buttons order-2 ${
+                hidden ? "hidden" : ""
+            }`}
             type="button"
             onClick={handleCreateTier}
         >
