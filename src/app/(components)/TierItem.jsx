@@ -3,6 +3,7 @@ import { useState } from "react";
 import * as motion from "framer-motion/client";
 import { AnimatePresence } from "framer-motion";
 import { XCircleIcon } from "lucide-react";
+import Overlay from "./Overlay";
 
 export default function TierItem({ item, index, tier, removeItem }) {
     const [expandedImage, setExpandedImage] = useState(null);
@@ -53,13 +54,7 @@ export default function TierItem({ item, index, tier, removeItem }) {
             </Draggable>
             <AnimatePresence>
                 {expandedImage && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="expanded-image-overlay"
-                        onClick={handleCloseImage}
-                    >
+                    <Overlay onClick={handleCloseImage}>
                         <div className="relative">
                             <img
                                 src={expandedImage}
@@ -73,7 +68,7 @@ export default function TierItem({ item, index, tier, removeItem }) {
                                 DELETE
                             </p>
                         </div>
-                    </motion.div>
+                    </Overlay>
                 )}
             </AnimatePresence>
         </>
