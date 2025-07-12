@@ -28,6 +28,7 @@ export default function Page() {
                     const parsedData = JSON.parse(localData);
                     setSavedData((prev) => ({
                         items: parsedData,
+                        tierListName: prev?.tierListName || "Tier List",
                         ...prev,
                     }));
                     return;
@@ -50,6 +51,7 @@ export default function Page() {
                 setSavedData({
                     items: transformedItems,
                     recordId: record.id,
+                    tierListName: record.fields.tierListName || "Tier List",
                 });
             } catch (error) {
                 setError(error.message);
@@ -81,6 +83,7 @@ export default function Page() {
         <TierList
             initialItems={savedData.items}
             recordId={savedData.recordId}
+            tierListName={savedData.tierListName}
         />
     );
 }

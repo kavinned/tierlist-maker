@@ -18,9 +18,11 @@ import Loader from "./Loader";
 import CopyLink from "./CopyLink";
 import SuccessMsg from "./SuccessMsg";
 
-export default function TierList({ initialItems, recordId }) {
+export default function TierList({ initialItems, recordId, tierListName }) {
     const [isEditingName, setIsEditingName] = useState(false);
-    const [tierListName, setTierListName] = useState("Tier List");
+    const [tierListNameState, setTierListName] = useState(
+        tierListName || "Tier List"
+    );
     const [items, setItems] = useState(
         initialItems || {
             Unranked: { name: "Unranked", color: "#323638", items: [] },
@@ -64,12 +66,12 @@ export default function TierList({ initialItems, recordId }) {
     };
 
     const handleEditName = () => {
-        if (tierListName.trim() === "") {
+        if (tierListNameState.trim() === "") {
             setMsg("Please enter a name.");
             const timer = setTimeout(() => setMsg(""), 3000);
             return () => clearTimeout(timer);
         }
-        setTierListName(tierListName);
+        setTierListName(tierListNameState);
         setIsEditingName(false);
     };
 
@@ -196,7 +198,7 @@ export default function TierList({ initialItems, recordId }) {
             setLoading(true);
             const records = await saveTierList(
                 items,
-                tierListName,
+                tierListNameState,
                 uniqueId,
                 recId
             );
@@ -315,7 +317,7 @@ export default function TierList({ initialItems, recordId }) {
                         isEditingName={isEditingName}
                         toggleEditName={toggleEditName}
                         handleEditName={handleEditName}
-                        tierListName={tierListName}
+                        tierListName={tierListNameState}
                         setTierListName={setTierListName}
                         handleCreateTier={handleCreateTier}
                     />
