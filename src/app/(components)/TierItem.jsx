@@ -50,7 +50,7 @@ export default function TierItem({ item, index, tier, removeItem }) {
                                 }}
                             />
                         )}
-                        <div className="spinner-small -z-10"></div>
+                        {item.image && <div className="spinner-small -z-10"></div>}
                         <button
                             className="item-delete z-20"
                             type="button"
